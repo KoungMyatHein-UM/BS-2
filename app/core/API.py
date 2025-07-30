@@ -14,8 +14,18 @@ class API:
         self.current_feature = None
         self.supported_files = supported_files
 
+        self._shutdown_handled = False
+
     def shutdown(self):
-        pass
+        if self._shutdown_handled:
+            return
+        else:
+            self._shutdown_handled = True
+
+            import sys
+            print("Shutdown triggered from JS context")
+            webview.windows[0].destroy()
+            sys.exit(0)
 
     def select_file(self):
         root = tk.Tk()

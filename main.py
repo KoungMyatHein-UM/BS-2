@@ -47,15 +47,12 @@ def handle_exit(signum, frame):
 
     print("Caught exit signal. Shutting down...")
 
+    if webview.windows:
+        # Ask JS to call back into Python and shut us down cleanly
+        webview.windows[0].evaluate_js("window.pywebview.api.shutdown()")
+
     if app_api:
         app_api.shutdown()
-
-    if webview.windows:
-        def close_window():
-            webview.windows[0].destroy()
-
-        webview.windows[0].evaluate_js("null")
-        webview.windows[0]._func_queue.put(close_window)
 
     sys.exit(0)
 
