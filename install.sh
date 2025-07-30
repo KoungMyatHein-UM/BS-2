@@ -2,6 +2,9 @@
 
 set -e
 
+echo "Installing python..."
+apt install python3.12-venv
+
 echo "Creating virtual environment..."
 python3 -m venv venv
 
