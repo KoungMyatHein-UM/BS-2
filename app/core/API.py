@@ -10,6 +10,7 @@ class API:
     def __init__(self, feature_manager: FeatureManager):
         self.feature_manager = feature_manager
         self.file_path = None
+        self.current_feature = None
 
     def select_file(self):
         root = tk.Tk()
@@ -22,6 +23,8 @@ class API:
         root.destroy()
 
         self.file_path = filepath
+        # reinvoke
+        self.invoke_feature(self.current_feature)
 
         return filepath
 
@@ -31,6 +34,8 @@ class API:
         return render
 
     def invoke_feature(self, feature_name: str):
+        self.current_feature = feature_name
+
         feature = self.feature_manager.get_feature(feature_name)
         response = feature.run(self.file_path)
 
