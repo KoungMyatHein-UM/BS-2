@@ -8,5 +8,7 @@ beautifulsoup4
 lxml
 pytesseract
 opencv-python-headless
-pywebview~=5.4
+pywebview
 jinja2
+PyQt5
+qtpy
