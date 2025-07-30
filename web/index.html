@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resizable Sidebar UI</title>
+    <link rel="stylesheet" href="main_style.css">
+</head>
+<body>
+<div class="topbar">
+    <div class="menu" data-menu="file">
+        <button>File</button>
+        <div class="dropdown">
+            <a onclick="onNew()">New</a>
+            <a onclick="onSave()">Save</a>
+            <a onclick="onExit()">Exit</a>
+        </div>
+    </div>
+
+    <div class="menu" data-menu="edit">
+        <button>Edit</button>
+        <div class="dropdown">
+            <a onclick="onUndo()">Undo</a>
+            <a onclick="onRedo()">Redo</a>
+        </div>
+    </div>
+
+    <div class="menu" data-menu="help">
+        <button>Help</button>
+        <div class="dropdown">
+            <a onclick="showHelpTopic('About')">About</a>
+            <a onclick="showHelpTopic('Shortcuts')">Shortcuts</a>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar" id="sidebar">
+        <!-- Sidebar content will be injected here -->
+    </div>
+
+    <div class="resizer" id="resizer"></div>
+
+    <div id="content">
+        <div id="Feature_1" class="tab active">
+            <h2>Welcome!</h2>
+            <p>This is the BigSister app!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sidebar resizer
+    const sidebar = document.getElementById('sidebar');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const minWidth = 150;
+        const maxWidth = window.innerWidth * 0.5;
+        const newWidth = Math.min(Math.max(e.clientX, minWidth), maxWidth);
+        sidebar.style.width = newWidth + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+</script>
+
+<script>
+    // MENU INTERACTION
+    document.addEventListener('DOMContentLoaded', () => {
+        const menus = document.querySelectorAll('.menu');
+
+        menus.forEach(menu => {
+            const button = menu.querySelector('button');
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeAllMenus();
+                menu.classList.toggle('open');
+            });
+        });
+
+        window.addEventListener('click', () => closeAllMenus());
+    });
+
+    function closeAllMenus() {
+        document.querySelectorAll('.menu').forEach(menu => {
+            menu.classList.remove('open');
+        });
+    }
+
+    // TOP BAR ACTIONS
+    function onNew() {
+        alert("New file...");
+    }
+
+    function onSave() {
+        alert("Saving...");
+    }
+
+    function onExit() {
+        alert("Exiting...");
+    }
+
+    function onUndo() {
+        alert("Undo");
+    }
+
+    function onRedo() {
+        alert("Redo");
+    }
+
+    function showHelpTopic(topic) {
+        const content = `
+        <h2>${topic}</h2>
+        <p>This is help content for <strong>${topic}</strong>.</p>
+    `;
+
+        const container = document.getElementById("content");
+        let tab = document.getElementById("HelpTab");
+
+        if (!tab) {
+            tab = document.createElement("div");
+            tab.id = "HelpTab";
+            tab.classList.add("tab");
+            container.appendChild(tab);
+        }
+
+        tab.innerHTML = content;
+
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+    }
+
+</script>
+
+<script>
+    window.addEventListener('pywebviewready', async () => {
+        try {
+            const content = await window.pywebview.api.render_side_bar();
+            document.getElementById("sidebar").innerHTML = content;
+        } catch (error) {
+            console.error("Sidebar render failed:", error);
+        }
+    });
+
+    async function invokeFeature(id) {
+        try {
+            const content = await window.pywebview.api.invoke_feature(id);
+
+            const container = document.getElementById("content");
+            let tab = document.getElementById(id);
+
+            if (tab) {
+                // Overwrite existing content
+                tab.innerHTML = content;
+            } else {
+                // Create new tab
+                tab = document.createElement("div");
+                tab.id = id;
+                tab.classList.add("tab");
+                tab.innerHTML = content;
+                container.appendChild(tab);
+            }
+
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            // Activate this one
+            tab.classList.add('active');
+
+        } catch (error) {
+            console.error("Feature render failed:", error);
+        }
+    }
+</script>
+</body>
+</html>
