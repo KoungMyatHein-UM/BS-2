@@ -2,6 +2,8 @@ import jinja2
 import tkinter as tk
 from tkinter import filedialog
 
+import webview
+
 from app.ui import web_templates
 from app.core.feature_manager import FeatureManager
 
@@ -24,7 +26,7 @@ class API:
 
         self.file_path = filepath
         # reinvoke
-        self.invoke_feature(self.current_feature)
+        webview.windows[0].evaluate_js(f'invokeFeature("{self.current_feature}")')
 
         return filepath
 
