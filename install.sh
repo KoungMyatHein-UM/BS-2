@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Installing python..."
+echo "Installing python venv..."
 apt install python3.12-venv
 
 echo "Creating virtual environment..."
