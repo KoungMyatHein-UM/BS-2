@@ -10,9 +10,9 @@
     <div class="menu" data-menu="file">
         <button>File</button>
         <div class="dropdown">
+            <a onclick="onLoad()">Load</a>
             <a onclick="onNew()">New</a>
             <a onclick="onSave()">Save</a>
-            <a onclick="onExit()">Exit</a>
         </div>
     </div>
 
@@ -46,6 +46,10 @@
             <p>This is the BigSister app!</p>
         </div>
     </div>
+</div>
+
+<div id="bottombar">
+    <p>Using file: </p> <span id="file_name"></span>
 </div>
 
 <script>
@@ -97,47 +101,44 @@
     }
 
     // TOP BAR ACTIONS
+    async function onLoad() {
+        try {
+            const result = await window.pywebview.api.select_file();
+            console.log("Selected file:", result);
+
+            if (result) {
+                document.getElementById("file_name").innerHTML = result;
+            }
+        } catch (err) {
+            console.error("File selection failed:", err);
+        }
+    }
+
     function onNew() {
         alert("New file...");
     }
 
-    function onSave() {
-        alert("Saving...");
-    }
-
-    function onExit() {
-        alert("Exiting...");
-    }
-
-    function onUndo() {
-        alert("Undo");
-    }
-
-    function onRedo() {
-        alert("Redo");
-    }
-
-    function showHelpTopic(topic) {
-        const content = `
-        <h2>${topic}</h2>
-        <p>This is help content for <strong>${topic}</strong>.</p>
-    `;
-
-        const container = document.getElementById("content");
-        let tab = document.getElementById("HelpTab");
-
-        if (!tab) {
-            tab = document.createElement("div");
-            tab.id = "HelpTab";
-            tab.classList.add("tab");
-            container.appendChild(tab);
-        }
-
-        tab.innerHTML = content;
-
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-    }
+    // function showHelpTopic(topic) {
+    //     const content = `
+    //     <h2>${topic}</h2>
+    //     <p>This is help content for <strong>${topic}</strong>.</p>
+    // `;
+    //
+    //     const container = document.getElementById("content");
+    //     let tab = document.getElementById("HelpTab");
+    //
+    //     if (!tab) {
+    //         tab = document.createElement("div");
+    //         tab.id = "HelpTab";
+    //         tab.classList.add("tab");
+    //         container.appendChild(tab);
+    //     }
+    //
+    //     tab.innerHTML = content;
+    //
+    //     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    //     tab.classList.add('active');
+    // }
 
 </script>
 

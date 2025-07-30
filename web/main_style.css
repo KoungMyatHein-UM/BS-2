@@ -126,3 +126,28 @@ body {
 .tab.active {
     display: block;
 }
+
+#bottombar {
+    background: #d9d9d9;
+    padding: 5px;
+
+    display: flex;
+    overflow: hidden;
+    flex-wrap: nowrap;
+}
+
+#bottombar p {
+    margin: 0;
+    white-space: nowrap;
+    display: inline;
+}
+
+#file_name {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: 0;
+}

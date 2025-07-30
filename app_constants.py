@@ -6,11 +6,11 @@ DEFAULT_WINDOW_DIMENSIONS = (1280, 800)
 MIN_WINDOW_DIMENSIONS = (800, 500)
 
 APP_FEATURES = {
-    "Feature_1": {
+    "exiftool_scraper": {
         "version": "v1_0",
-        "display_name": "Feature 1",
-        "description": "This is the first feature",
-        "icon": "icon_1.png"
+        "display_name": "EXIFTool Scraper",
+        "description": "This feature allows you to scrape EXIF data from images",
+        "icon": "icon_exiftool.png"
     },
 
     "Feature_2": {

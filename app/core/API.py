@@ -1,4 +1,6 @@
 import jinja2
+import tkinter as tk
+from tkinter import filedialog
 
 from app.ui import web_templates
 from app.core.feature_manager import FeatureManager
@@ -9,8 +11,19 @@ class API:
         self.feature_manager = feature_manager
         self.file_path = None
 
-    def set_file_path(self, file_path):
-        self.file_path = file_path
+    def select_file(self):
+        root = tk.Tk()
+        root.withdraw()
+        root.wm_attributes("-topmost", 1)
+
+        filepath = filedialog.askopenfilename(
+            filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
+        )
+        root.destroy()
+
+        self.file_path = filepath
+
+        return filepath
 
     def render_side_bar(self):
         template =jinja2.Template(web_templates.LEFT_BAR_FEATURE_TEMPLATE)

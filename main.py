@@ -26,7 +26,7 @@ def start_app():
         resizable=True,
         fullscreen=False,
         min_size=app_constants.MIN_WINDOW_DIMENSIONS,
-        confirm_close=True
+        confirm_close=False
     )
     webview.start(gui='qt', debug=True)
 
