@@ -24,11 +24,17 @@ class API:
         )
         root.destroy()
 
-        self.file_path = filepath
-        # reinvoke
-        webview.windows[0].evaluate_js(f'invokeFeature("{self.current_feature}")')
+        if filepath is not None and filepath != "":
+            self.file_path = filepath
 
-        return filepath
+            # reinvoke
+            if self.current_feature is not None:
+                webview.windows[0].evaluate_js(f'invokeFeature("{self.current_feature}")')
+
+            return filepath
+        else:
+            return self.file_path
+
 
     def render_side_bar(self):
         template =jinja2.Template(web_templates.LEFT_BAR_FEATURE_TEMPLATE)
