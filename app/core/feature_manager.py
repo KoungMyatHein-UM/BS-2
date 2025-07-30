@@ -5,16 +5,19 @@ import traceback
 from app.core import feature_interface
 
 class FeatureManager:
-    def __init__(self, features_dir, feature_definitions):
-        self.features = self.load_features(features_dir, feature_definitions)
+    def __init__(self, feature_definitions):
+        self.features = self.load_features(feature_definitions)
 
-    def load_features(self, feature_dir, feature_definitions):
+    def load_features(self, feature_definitions):
         loaded_features = {}
         print("[FeatureManager] Loading features...")
 
         for feature in feature_definitions:
-            feature_name = feature['name']
-            feature_version = feature['version']
+            feature_name = feature
+            feature_display_name = feature_definitions[feature]['display_name']
+            feature_version = feature_definitions[feature]['version']
+            feature_description = feature_definitions[feature]['description']
+            feature_icon = feature_definitions[feature]['icon']
             module_path = f"features.{feature_name}.{feature_version}.{feature_name}"
 
             print(f"  → [{feature_name}] Loading from {module_path}...", end=" ", flush=True)
@@ -48,6 +51,9 @@ class FeatureManager:
             loaded_features[feature_name] = {
                 "instance": instance,
                 "version": feature_version,
+                "display_name": feature_display_name,
+                "description": feature_description,
+                "icon": feature_icon,
             }
 
         print(f"[FeatureManager] Loaded {len(loaded_features)} feature(s).")
@@ -60,4 +66,10 @@ class FeatureManager:
         return feature["instance"]
 
     def get_available_features(self):
-        return {name: data["version"] for name, data in self.features.items()}
+        return {
+            name: {
+                "version": data["version"],
+                "display_name": data["display_name"]
+            }
+            for name, data in self.features.items()
+        }
