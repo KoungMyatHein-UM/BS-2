@@ -10,9 +10,11 @@ from app.core.feature_manager import FeatureManager
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 app_api = None
+main_window = None
 
 def start_app():
     global app_api
+    global main_window
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +23,7 @@ def start_app():
 
     feature_manager = FeatureManager(app_constants.APP_FEATURES)
     app_api = API(feature_manager, app_constants.SUPPORTED_FILE_TYPES)
-    window = webview.create_window(
+    main_window = webview.create_window(
         f"{app_constants.APP_NAME} {app_constants.APP_VERSION}",
         str(index_html),
         js_api=app_api,
@@ -36,12 +38,18 @@ def start_app():
     webview.start(gui='qt', debug=False)
 
 def handle_exit(signum, frame):
+    import threading
+
     print("Caught exit signal. Shutting down...")
+
     if app_api:
         app_api.shutdown()
-    if webview.windows:
-        webview.windows[0].destroy()
-    sys.exit(0)
+
+    if main_window:
+        def safe_close():
+            main_window.destroy()  # This *is* callable
+
+        threading.Thread(target=safe_close).start()
 
 if __name__ == '__main__':
     # Catch Ctrl+C and termination signals
