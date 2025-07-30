@@ -10,13 +10,9 @@ from app.core.feature_manager import FeatureManager
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 app_api = None
-main_window = None
-
-_exit_handled = False
 
 def start_app():
     global app_api
-    global main_window
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,29 +35,16 @@ def start_app():
     )
     webview.start(gui='qt', debug=False)
 
-def handle_exit(signum, frame):
-    global _exit_handled
-    if _exit_handled:
-        return
-    _exit_handled = True
-
-    print("Caught exit signal. Shutting down...")
-
-    if webview.windows:
-        # Ask JS to call back into Python and shut us down cleanly
-        webview.windows[0].evaluate_js("window.pywebview.api.shutdown()")
-
+def handle_exit():
     if app_api:
         app_api.shutdown()
-
     sys.exit(0)
 
-if __name__ == '__main__':
-    signal.signal(signal.SIGINT, handle_exit)
 
+if __name__ == '__main__':
     try:
         start_app()
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
     finally:
-        handle_exit(None, None)
+        handle_exit()

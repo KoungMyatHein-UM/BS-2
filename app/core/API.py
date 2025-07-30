@@ -17,15 +17,7 @@ class API:
         self._shutdown_handled = False
 
     def shutdown(self):
-        if self._shutdown_handled:
-            return
-        else:
-            self._shutdown_handled = True
-
-            import sys
-            print("Shutdown triggered from JS context")
-            webview.windows[0].destroy()
-            sys.exit(0)
+        print("Shutdown!")
 
     def select_file(self):
         root = tk.Tk()
