@@ -28,7 +28,7 @@ def start_app():
         min_size=app_constants.MIN_WINDOW_DIMENSIONS,
         confirm_close=True
     )
-    webview.start(debug=True)
+    webview.start(gui='qt', debug=True)
 
 
 if __name__ == '__main__':
