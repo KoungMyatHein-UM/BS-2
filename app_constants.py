@@ -5,6 +5,8 @@ HTML_NAME = "index.html"
 DEFAULT_WINDOW_DIMENSIONS = (1280, 800)
 MIN_WINDOW_DIMENSIONS = (800, 500)
 
+SUPPORTED_FILE_TYPES = [("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
+
 APP_FEATURES = {
     "exiftool_scraper": {
         "version": "v1_0",

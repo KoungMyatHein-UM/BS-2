@@ -9,10 +9,11 @@ from app.core.feature_manager import FeatureManager
 
 
 class API:
-    def __init__(self, feature_manager: FeatureManager):
+    def __init__(self, feature_manager: FeatureManager, supported_files: list):
         self.feature_manager = feature_manager
         self.file_path = None
         self.current_feature = None
+        self.supported_files = supported_files
 
     def select_file(self):
         root = tk.Tk()
@@ -20,7 +21,7 @@ class API:
         root.wm_attributes("-topmost", 1)
 
         filepath = filedialog.askopenfilename(
-            filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
+            filetypes=self.supported_files
         )
         root.destroy()
 

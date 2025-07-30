@@ -15,7 +15,7 @@ def start_app():
     index_html = os.path.join(web_dir, app_constants.HTML_NAME)
 
     feature_manager = FeatureManager(app_constants.APP_FEATURES)
-    app_api = API(feature_manager)
+    app_api = API(feature_manager, app_constants.SUPPORTED_FILE_TYPES)
     window = webview.create_window(
         f"{app_constants.APP_NAME} {app_constants.APP_VERSION}",
         str(index_html),
