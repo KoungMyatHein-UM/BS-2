@@ -1,3 +1,5 @@
+import signal
+
 import webview
 import sys
 import os
@@ -7,8 +9,11 @@ from app.core.API import API
 from app.core.feature_manager import FeatureManager
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+app_api = None
 
 def start_app():
+    global app_api
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     web_dir = os.path.join(base_dir, "web")
@@ -30,10 +35,21 @@ def start_app():
     )
     webview.start(gui='qt', debug=False)
 
+def handle_exit(signum, frame):
+    print("Caught exit signal. Shutting down...")
+    if app_api:
+        app_api.shutdown()
+    if webview.windows:
+        webview.windows[0].destroy()
+    sys.exit(0)
 
 if __name__ == '__main__':
+    # Catch Ctrl+C and termination signals
+    signal.signal(signal.SIGINT, handle_exit)
 
     try:
         start_app()
-    except IndexError as e:
+    except KeyboardInterrupt:
+        handle_exit(None, None)
+    except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

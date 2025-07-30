@@ -14,6 +14,9 @@ class API:
         self.current_feature = None
         self.supported_files = supported_files
 
+    def shutdown(self):
+        pass
+
     def select_file(self):
         root = tk.Tk()
         root.withdraw()
