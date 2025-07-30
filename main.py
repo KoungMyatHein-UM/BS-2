@@ -38,26 +38,25 @@ def start_app():
     webview.start(gui='qt', debug=False)
 
 def handle_exit(signum, frame):
-    import threading
-
     print("Caught exit signal. Shutting down...")
 
     if app_api:
         app_api.shutdown()
 
-    if main_window:
-        def safe_close():
-            main_window.destroy()  # This *is* callable
+    if webview.windows:
+        def close_window():
+            webview.windows[0].destroy()
 
-        threading.Thread(target=safe_close).start()
+        # Queue it on the GUI thread
+        webview.windows[0].evaluate_js("null")
+        webview.windows[0]._func_queue.put(close_window)
+
+    sys.exit(0)
 
 if __name__ == '__main__':
-    # Catch Ctrl+C and termination signals
-    signal.signal(signal.SIGINT, handle_exit)
-
     try:
         start_app()
-    except KeyboardInterrupt:
-        handle_exit(None, None)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
+    finally:
+        handle_exit(None, None)
