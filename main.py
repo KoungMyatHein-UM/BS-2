@@ -12,6 +12,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 app_api = None
 main_window = None
 
+_exit_handled = False
+
 def start_app():
     global app_api
     global main_window
@@ -38,6 +40,11 @@ def start_app():
     webview.start(gui='qt', debug=False)
 
 def handle_exit(signum, frame):
+    global _exit_handled
+    if _exit_handled:
+        return
+    _exit_handled = True
+
     print("Caught exit signal. Shutting down...")
 
     if app_api:
@@ -47,13 +54,14 @@ def handle_exit(signum, frame):
         def close_window():
             webview.windows[0].destroy()
 
-        # Queue it on the GUI thread
         webview.windows[0].evaluate_js("null")
         webview.windows[0]._func_queue.put(close_window)
 
     sys.exit(0)
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, handle_exit)
+
     try:
         start_app()
     except Exception as e:
