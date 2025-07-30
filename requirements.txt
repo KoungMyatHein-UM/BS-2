@@ -13,4 +13,3 @@ jinja2
 PyQt5
 qtpy
 PyQtWebEngine
-tkinter
