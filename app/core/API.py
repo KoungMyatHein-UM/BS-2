@@ -1,7 +1,6 @@
 import jinja2
 import tkinter as tk
 from tkinter import filedialog
-
 import webview
 
 from app.ui import web_templates
