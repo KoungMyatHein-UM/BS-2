@@ -1,14 +1,14 @@
 from jinja2 import Template
 
-from app.feature_interface import BaseFeature
+from app.core.feature_interface import BaseFeature
 
 class Feature(BaseFeature):
-    def run(self, file_path=None) -> str:
-        print("Running Feature_2")
-        print("Hello from Feature_2.0.0! This is a feature that is part of the app's default installation.")
+    def run(self, file_path) -> str:
+        print("Running Feature_1")
+        print("Hello from Feature_1.0.0! This is a feature that is part of the app's default installation.")
 
         template_str = """
-        <h2>Feature_2</h2>
+        <h2>Feature_1</h2>
         <p>Provided path: {{ file_path }}</p>
         """
         template = Template(template_str)

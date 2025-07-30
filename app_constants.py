@@ -6,16 +6,16 @@ MAIN_WINDOW_HTML_NAME = "index.html"
 APP_FEATURES = [
     {
         "name": "Feature_1",
-        "version": "1.0"
+        "version": "v1_0"
     },
 
     {
         "name": "Feature_2",
-        "version": "1.0"
+        "version": "v1_0"
     },
 
     {
         "name": "Feature_3",
-        "version": "1.0"
+        "version": "v1_0"
     }
 ]
