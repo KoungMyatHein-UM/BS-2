@@ -15,7 +15,7 @@ class API:
         self.supported_files = supported_files
 
     def shutdown(self):
-        webview.destroy_window()
+        pass
 
     def select_file(self):
         root = tk.Tk()
