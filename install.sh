@@ -23,6 +23,9 @@ sudo apt install -y \
   libxcb-shm0 libxcb-icccm4 libxcb-sync1 libxcb-xfixes0 libxcb-shape0 libxcb-randr0 \
   libxcb-render-util0 libxrender1 libxkbcommon0 libgl1
 
+echo "Installing tkinter..."
+sudo apt install -y python3-tk
+
 echo "Installing required tools..."
 sudo apt install -y libimage-exiftool-perl
 
