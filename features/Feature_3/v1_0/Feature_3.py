@@ -2,6 +2,13 @@ from jinja2 import Template
 
 from app.core.feature_interface import BaseFeature
 
+def register():
+    instance = Feature()
+    return {
+        "instance": instance,
+        "self_test": lambda: False,
+        "shutdown": lambda: print("Shutting down Feature_3..."),
+    }
 class Feature(BaseFeature):
     def run(self, file_path) -> str:
         print("Running Feature_3")
@@ -13,6 +20,3 @@ class Feature(BaseFeature):
         """
         template = Template(template_str)
         return template.render(file_path=file_path)
-
-def register():
-    return Feature()

@@ -5,6 +5,14 @@ from jinja2 import Template
 
 from app.core.feature_interface import BaseFeature
 
+def register():
+    instance = Feature()
+    return {
+        "instance": instance,
+        "self_test": lambda: True,
+        "shutdown": lambda: print("Shutting down exiftool_scraper..."),
+    }
+
 class Feature(BaseFeature):
     def run(self, file_path) -> str:
         if not file_path or not os.path.isfile(file_path):
@@ -38,6 +46,3 @@ class Feature(BaseFeature):
 
         template = Template(template_str)
         return template.render(file=os.path.basename(file_path), metadata=metadata)
-
-def register():
-    return Feature()

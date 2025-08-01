@@ -3,6 +3,7 @@ import signal
 import webview
 import sys
 import os
+import traceback
 
 import app_constants
 from app.core.API import API
@@ -19,7 +20,7 @@ def start_app():
     web_dir = os.path.join(base_dir, "web")
     index_html = os.path.join(web_dir, app_constants.HTML_NAME)
 
-    feature_manager = FeatureManager(app_constants.APP_FEATURES)
+    feature_manager = FeatureManager(app_constants.DEFAULTS, app_constants.APP_FEATURES)
     app_api = API(feature_manager, app_constants.SUPPORTED_FILE_TYPES)
     main_window = webview.create_window(
         f"{app_constants.APP_NAME} {app_constants.APP_VERSION}",
@@ -45,6 +46,6 @@ if __name__ == '__main__':
     try:
         start_app()
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        traceback.print_exc()
     finally:
         handle_exit()

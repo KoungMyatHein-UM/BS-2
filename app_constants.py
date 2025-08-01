@@ -7,6 +7,15 @@ MIN_WINDOW_DIMENSIONS = (800, 500)
 
 SUPPORTED_FILE_TYPES = [("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
 
+DEFAULTS = {
+    "enabled": True,
+    "cached": True,
+    "version": "v1_0",
+    "display_name": None,
+    "description": None,
+    "icon": None,
+}
+
 APP_FEATURES = {
     "exiftool_scraper": {
         "version": "v1_0",
@@ -26,6 +35,21 @@ APP_FEATURES = {
         "version": "v1_0",
         "display_name": "Feature 3",
         "description": "This is the third feature",
+        "icon": "icon_3.png"
+    },
+
+    "Feature_4": {
+        "version": "v1_0",
+        "display_name": "Feature 4",
+        "description": "This is the fourth feature",
+        "icon": "icon_3.png"
+    },
+
+    "Feature_5": {
+        "enabled": False,
+        "version": "v1_0",
+        "display_name": "Feature 4",
+        "description": "This is the fourth feature",
         "icon": "icon_3.png"
     }
 }

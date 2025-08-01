@@ -17,7 +17,8 @@ class API:
         self._shutdown_handled = False
 
     def shutdown(self):
-        print("Shutdown!")
+        print("API Shutdown!")
+        self.feature_manager.shutdown()
 
     def select_file(self):
         root = tk.Tk()
