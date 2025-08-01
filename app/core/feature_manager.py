@@ -37,6 +37,7 @@ class FeatureManager:
         disabled = 0
 
         print("[FeatureManager] Loading features...")
+        print(f"[FeatureManager] {len(feature_definitions)} feature(s) defined.")
 
         for feature in feature_definitions:
             scanned += 1
@@ -56,7 +57,7 @@ class FeatureManager:
             # configure module path
             module_path = f"features.{feature_name}.{feature_version}.{feature_name}"
 
-            print(f"  → [{feature_name}] Loading from {module_path}...")
+            print(f"  → [{feature_name}] Loading {scanned}/{len(feature_definitions)} from {module_path}...")
 
             # 1. Check if feature is enabled
             if not feature_enabled:
