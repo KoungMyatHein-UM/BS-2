@@ -26,11 +26,11 @@ APP_FEATURES = {
         "icon": "icon_exiftool.png"
     },
 
-    "Feature_2": {
+    "zsteg": {
         "version": "v1_0",
-        "display_name": "Feature 2",
+        "display_name": "Zsteg Analysis",
         "description": "This is the second feature",
-        "icon": "icon_2.png"
+        "icon": "icon_zsteg.png"
     },
 
     "Feature_3": {
