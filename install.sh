@@ -32,6 +32,6 @@ sudo apt install -y libimage-exiftool-perl
 echo "Installation complete. Run the app with:"
 echo "source venv/bin/activate && python main.py"
 
-sudo apt install ruby ruby-dev build-essential
+sudo apt install ruby ruby-dev build-essential -y
 
-sudo gem install zsteg
+sudo gem install zsteg -y
