@@ -9,11 +9,17 @@ def register():
     instance = Feature()
     return {
         "instance": instance,
-        "self_test": lambda: True,
-        "shutdown": lambda: print("Shutting down exiftool_scraper..."),
+        "self_test": instance.self_test,
+        "shutdown": instance.shutdown,
     }
 
 class Feature(BaseFeature):
+    def self_test(self):
+        return True
+
+    def shutdown(self):
+        print("Shutting down exiftool_scraper...")
+
     def run(self, file_path) -> str:
         if not file_path or not os.path.isfile(file_path):
             return "<p>No file selected or invalid path.</p>"

@@ -7,6 +7,8 @@ MIN_WINDOW_DIMENSIONS = (800, 500)
 
 SUPPORTED_FILE_TYPES = [("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
 
+# TODO: implement description as tooltip on hover
+# TODO: implement caching logic
 DEFAULTS = {
     "enabled": True,
     "cached": True,
@@ -48,8 +50,8 @@ APP_FEATURES = {
     "Feature_5": {
         "enabled": False,
         "version": "v1_0",
-        "display_name": "Feature 4",
-        "description": "This is the fourth feature",
+        "display_name": "Feature 5",
+        "description": "This is the fifth feature",
         "icon": "icon_3.png"
     }
 }

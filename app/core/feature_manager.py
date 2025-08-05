@@ -3,19 +3,20 @@ import time
 import traceback
 from app.core import feature_interface
 
-
+# HELPER METHODS
 def apply_defaults(config, defaults):
     for key, value in defaults.items():
         config.setdefault(key, value)
     return config
-
 
 def apply_overrides(config, overrides):
     for key, value in overrides.items():
         if key in config:
             config[key] = value
     return config
+# ==================================
 
+# TODO: Pass plugin debug flag
 
 class FeatureManager:
     def __init__(self, defaults, feature_definitions):
@@ -141,7 +142,7 @@ class FeatureManager:
         print(f"[FeatureManager] Loaded:\t{len(loaded_features)} feature(s).")
         return loaded_features
 
-    def get_feature(self, feature_name):
+    def __get_feature(self, feature_name: str) -> feature_interface.BaseFeature:
         feature = self.features.get(feature_name)
         if not feature:
             raise Exception(f"Feature '{feature_name}' not found")
@@ -155,3 +156,10 @@ class FeatureManager:
             }
             for name, data in self.features.items()
         }
+
+    def invoke_feature(self, feature_name: str, params):
+
+        feature = self.__get_feature(feature_name)
+        response = feature.run(params)
+
+        return response

@@ -152,9 +152,9 @@
         }
     });
 
-    async function invokeFeature(id) {
+    async function runFeature(id) {
         try {
-            const content = await window.pywebview.api.invoke_feature(id);
+            const content = await window.pywebview.api.run_feature(id);
 
             const container = document.getElementById("content");
             let tab = document.getElementById(id);
