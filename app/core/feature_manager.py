@@ -17,6 +17,7 @@ def apply_overrides(config, overrides):
 # ==================================
 
 # TODO: Pass plugin debug flag
+# TODO: Pass plugin debug flag
 
 class FeatureManager:
     def __init__(self, defaults, feature_definitions):
