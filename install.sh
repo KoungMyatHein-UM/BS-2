@@ -35,3 +35,9 @@ echo "source venv/bin/activate && python main.py"
 sudo apt install ruby ruby-dev build-essential -y
 
 sudo gem install zsteg -y
+
+echo "Setting execute permissions for all shell scripts..."
+chmod +x install.sh
+chmod +x features/binwalk/v1_0/runbinwalk.sh
+chmod +x features/steghide/v1_0/runsteghide.sh
+chmod +x features/zsteg/v1_0/runzsteg.sh 
