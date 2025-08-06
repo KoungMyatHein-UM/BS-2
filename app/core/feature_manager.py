@@ -2,6 +2,7 @@ import importlib
 import time
 import traceback
 from app.core import feature_interface
+from app.core.easy_options import EasyOptions
 
 # HELPER METHODS
 def apply_defaults(config, defaults):
@@ -16,7 +17,6 @@ def apply_overrides(config, overrides):
     return config
 # ==================================
 
-# TODO: Pass plugin debug flag
 # TODO: Pass plugin debug flag
 
 class FeatureManager:
@@ -124,12 +124,19 @@ class FeatureManager:
                 print(f"    → ⚠️ No self-test defined. Optional self-testing is recommended!")
 
 
+            # check if module registration provides an EasyOptions instance
+            easy_option = None
+            if hasattr(module, "easy_option"):
+                print(f"    → ✅ EasyOptions provided.")
+
+
             elapsed = time.time() - start_time
             print(f"    → ✅ Done ({elapsed:.2f}s)")
 
             # 5. Store with other features
             loaded_features[feature_name] = {
                 "instance": instance,
+                "easy_option": easy_option,
                 "shutdown": module_instance_data.get("shutdown"),
                 "version": feature_version,
                 "display_name": feature_display_name,

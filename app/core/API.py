@@ -19,8 +19,8 @@ class API:
         self._shutdown_handled = False
 
     # TODO: See below.
-    # Bad CODE: this method is to be called by main.py on shutdown but is mixed in with front-end exposed methods
-    # API EXPOSURE VULNERABILITY: a rogue plugin can call this api to trigger an unintentional shutdown.
+    # API EXPOSURE VULNERABILITY: this method is to be called by main.py on shutdown but is mixed in with front-end exposed methods
+    # a rogue plugin can call this api to trigger an unintentional shutdown.
     # It's fine for now since this tool is for in-house development only but we need to change it when we go public
     def shutdown(self):
         print("API Shutdown!")
@@ -45,7 +45,7 @@ class API:
 
             # reload the feature
             if self.feature_reload and self.last_used_feature is not None:
-                webview.windows[0].evaluate_js(f'invokeFeature("{self.last_used_feature}")')
+                webview.windows[0].evaluate_js(f'runFeature("{self.last_used_feature}")')
 
             return filepath
         else:
