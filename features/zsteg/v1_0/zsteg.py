@@ -14,6 +14,9 @@ def register():
 
 class Feature(BaseFeature):
 
+    def shutdown(self):
+            print("Shutting down zsteg...")
+    
     def run(self, file_path) -> str:
 
         # Check if the file path is valid
@@ -32,20 +35,37 @@ class Feature(BaseFeature):
             
             # Make sure the script is executable
             os.chmod(script_path, 0o755)
+
+            # Set environment variable to force non-interactive mode
+            env = os.environ.copy()
+            env['NON_INTERACTIVE'] = 'true'
             
             # Run the shell script with the image path
             result = subprocess.run([script_path, file_path],
                                     capture_output=True,
                                     text=True,
-                                    timeout=60  # Add timeout to prevent hanging
+                                    timeout=60,  # Add timeout to prevent hanging
+                                    env=env,
+                                    stdin=subprocess.DEVNULL
                                     )
-            print(result)
+            print(f"[DEBUG] Return code: {result.returncode}")
+            print(f"[DEBUG] STDOUT length: {len(result.stdout)}")
+            print(f"[DEBUG] STDERR length: {len(result.stderr)}")
+            print(f"[DEBUG] First 200 chars of stdout: {result.stdout[:200]}")
             
             if result.returncode != 0:
                 return f"Error: {result.stderr.strip() if result.stderr else 'Unknown error occurred'}"
             
-            return result.stdout
-            
+            # Render HTML using Jinja2
+            template_str = """
+            <h2>Zsteg Analysis Results</h2>
+            <p><strong>File:</strong> {{ file }}</p>
+            <pre>{{ output }}</pre>
+            """
+
+            template = Template(template_str)
+            return template.render(file=file_path, output=result.stdout)
+
         except subprocess.TimeoutExpired:
             return "Error: zsteg analysis timed out"
         except subprocess.CalledProcessError as e:
