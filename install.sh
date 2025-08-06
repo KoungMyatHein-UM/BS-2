@@ -29,15 +29,14 @@ sudo apt install -y python3-tk
 echo "Installing required tools..."
 sudo apt install -y libimage-exiftool-perl
 
-echo "Installation complete. Run the app with:"
-echo "source venv/bin/activate && python main.py"
+sudo apt install -y ruby ruby-dev build-essential
 
-sudo apt install ruby ruby-dev build-essential -y
-
-sudo gem install zsteg -y
+sudo gem install zsteg
 
 echo "Setting execute permissions for all shell scripts..."
-chmod +x install.sh
-chmod +x features/binwalk/v1_0/runbinwalk.sh
-chmod +x features/steghide/v1_0/runsteghide.sh
-chmod +x features/zsteg/v1_0/runzsteg.sh 
+chmod a+x features/binwalk/v1_0/runbinwalk.sh
+chmod a+x features/steghide/v1_0/runsteghide.sh
+chmod a+x features/zsteg/v1_0/runzsteg.sh
+
+echo "Installation complete. Run the app with:"
+echo "source venv/bin/activate && python main.py"
