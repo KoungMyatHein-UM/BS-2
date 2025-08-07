@@ -7,7 +7,7 @@ class EasyOptions(BaseEasyOptions):
         self.feature_name = None
         self.options = {}
 
-
+    # TODO: check if option_id already exists instead of overriding
     def add_option(self, option_id: str, option_label: str, option_callable: callable) -> None:
         self.options[option_id] = {
             "id": option_id,

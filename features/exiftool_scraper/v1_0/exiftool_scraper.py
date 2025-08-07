@@ -9,6 +9,9 @@ from app.core.contracts.feature_interface import BaseFeature
 def register():
     instance = Feature()
 
+    easy_options = EasyOptions("EXIFTools Scraper Options:")
+    easy_options.add_option("file_path", "File Path", None)
+
     return {
         "instance": instance,
         "self_test": instance.self_test,
