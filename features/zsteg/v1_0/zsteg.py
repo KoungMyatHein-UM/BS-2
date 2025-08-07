@@ -1,4 +1,5 @@
 from app.core.contracts.feature_interface import BaseFeature
+from jinja2 import Template
 
 import subprocess
 import os
@@ -14,31 +15,31 @@ def register():
 class Feature(BaseFeature):
 
     def shutdown(self):
-            print("Shutting down zsteg...")
-    
+        print("Shutting down zsteg...")
+
     def run(self, file_path) -> str:
 
         # Check if the file path is valid
         if not file_path or not os.path.isfile(file_path):
             return "<p>No file selected or invalid path.</p>"
-        
+
         try:
-            
+
             # Get the absolute path to the shell script
             script_dir = os.path.dirname(os.path.abspath(__file__))
             script_path = os.path.join(script_dir, 'runzsteg.sh')
-            
+
             # Check if the script exists
             if not os.path.exists(script_path):
                 return f"Error: Script '{script_path}' not found"
-            
+
             # Make sure the script is executable
             os.chmod(script_path, 0o755)
 
             # Set environment variable to force non-interactive mode
             env = os.environ.copy()
             env['NON_INTERACTIVE'] = 'true'
-            
+
             # Run the shell script with the image path
             result = subprocess.run([script_path, file_path],
                                     capture_output=True,
@@ -51,10 +52,10 @@ class Feature(BaseFeature):
             print(f"[DEBUG] STDOUT length: {len(result.stdout)}")
             print(f"[DEBUG] STDERR length: {len(result.stderr)}")
             print(f"[DEBUG] First 200 chars of stdout: {result.stdout[:200]}")
-            
+
             if result.returncode != 0:
                 return f"Error: {result.stderr.strip() if result.stderr else 'Unknown error occurred'}"
-            
+
             # Render HTML using Jinja2
             template_str = """
             <h2>Zsteg Analysis Results</h2>
