@@ -22,9 +22,6 @@ class Feature(BaseFeature):
     def shutdown(self):
         print("Shutting down exiftool_scraper...")
 
-    def hello(self, params: dict = None) -> str:
-        return f"Hello from exiftool_scraper with params: {params}!"
-
     def run_default(self, params: dict) -> str:
         file_path = params.get("file_path")
         if not file_path or not os.path.isfile(file_path):
