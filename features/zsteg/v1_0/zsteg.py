@@ -17,7 +17,7 @@ class Feature(BaseFeature):
     def shutdown(self):
         print("Shutting down zsteg...")
 
-    def run(self, file_path) -> str:
+    def run_default(self, file_path) -> str:
 
         # Check if the file path is valid
         if not file_path or not os.path.isfile(file_path):

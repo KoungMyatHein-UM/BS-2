@@ -1,5 +1,3 @@
-import signal
-
 import webview
 import sys
 import os

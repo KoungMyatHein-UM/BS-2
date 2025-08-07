@@ -11,7 +11,7 @@ def register():
     }
 
 class Feature(BaseFeature):
-    def run(self, file_path) -> str:
+    def run_default(self, file_path) -> str:
         print("Running Feature_2")
         print("Hello from Feature_2.0.0! This is a feature that is part of the app's default installation.")
 

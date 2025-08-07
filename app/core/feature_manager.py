@@ -187,5 +187,5 @@ class FeatureManager:
         # no EasyOptions defined
         # this is the minimum default
         else:
-            response = feature.run(params)
+            response = feature.run_default(params)
             return response
