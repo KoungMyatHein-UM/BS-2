@@ -1,6 +1,6 @@
+from jinja2 import Template
 from app.core.contracts.feature_interface import BaseFeature
 from app.core.easy_options import EasyOptions
-from jinja2 import Template
 
 import subprocess
 import os
@@ -51,7 +51,6 @@ class Feature(BaseFeature):
             env = os.environ.copy()
             env['NON_INTERACTIVE'] = 'true'
             
-            # Run the shell script with the image path
             # Run the shell script with the image path
             result = subprocess.run([script_path, file_path],
                                     capture_output=True,

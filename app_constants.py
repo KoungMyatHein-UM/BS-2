@@ -33,16 +33,16 @@ APP_FEATURES = {
         "icon": "icon_zsteg.png"
     },
 
-    "Feature_3": {
+    "steghide": {
         "version": "v1_0",
-        "display_name": "Feature 3",
+        "display_name": "Steghide Analysis",
         "description": "This is the third feature",
         "icon": "icon_3.png"
     },
 
-    "Feature_4": {
+    "binwalk": {
         "version": "v1_0",
-        "display_name": "Feature 4",
+        "display_name": "Binwalk Analysis",
         "description": "This is the fourth feature",
         "icon": "icon_3.png"
     },
