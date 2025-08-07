@@ -1,6 +1,6 @@
 from jinja2 import Template
 
-from app.core.feature_interface import BaseFeature
+from app.core.contracts.feature_interface import BaseFeature
 
 def register():
     instance = Feature()

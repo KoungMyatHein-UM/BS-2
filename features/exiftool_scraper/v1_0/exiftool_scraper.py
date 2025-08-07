@@ -3,14 +3,21 @@ import json
 import os
 from jinja2 import Template
 
-from app.core.feature_interface import BaseFeature
+from app.core.easy_options import EasyOptions
+from app.core.contracts.feature_interface import BaseFeature
 
 def register():
     instance = Feature()
+
+    easy_options = EasyOptions("EXIFTools Options:")
+    easy_options.add_option("hello", "Say Hello", instance.hello)
+    easy_options.add_option("run", "Run exiftool on a file.", instance.run)
+
     return {
         "instance": instance,
         "self_test": instance.self_test,
         "shutdown": instance.shutdown,
+        "easy_options": easy_options
     }
 
 class Feature(BaseFeature):
@@ -20,7 +27,11 @@ class Feature(BaseFeature):
     def shutdown(self):
         print("Shutting down exiftool_scraper...")
 
-    def run(self, file_path) -> str:
+    def hello(self, params: dict = None) -> str:
+        return f"Hello from exiftool_scraper with params: {params}!"
+
+    def run(self, params: dict) -> str:
+        file_path = params.get("file_path")
         if not file_path or not os.path.isfile(file_path):
             return "<p>No file selected or invalid path.</p>"
 

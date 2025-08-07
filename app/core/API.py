@@ -60,9 +60,9 @@ class API:
         render = template.render(features=self.feature_manager.get_available_features())
         return render
 
-    def run_feature(self, feature_name: str):
+    def run_feature(self, feature_name: str, option_id: str = None):
         self.last_used_feature = feature_name
 
-        response = self.feature_manager.invoke_feature(feature_name, self.file_path)
+        response = self.feature_manager.invoke_feature(feature_name, option_id, {"file_path": self.file_path})
 
         return response

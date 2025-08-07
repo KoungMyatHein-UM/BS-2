@@ -1,6 +1,6 @@
 from jinja2 import Template
 
-from app.core.feature_interface import BaseFeature
+from app.core.contracts.feature_interface import BaseFeature
 
 class Feature(BaseFeature):
     def run(self, file_path) -> str:

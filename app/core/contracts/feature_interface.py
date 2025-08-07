@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class BaseFeature(ABC):
     # ***** REQUIRED *****
     @abstractmethod
-    def run(self, file_path: str) -> str:
+    def run(self, params: dict) -> str:
         pass
 
     # ***** OPTIONAL *****

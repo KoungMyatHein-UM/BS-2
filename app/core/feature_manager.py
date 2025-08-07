@@ -1,7 +1,8 @@
 import importlib
 import time
 import traceback
-from app.core import feature_interface
+from app.core.contracts.feature_interface import BaseFeature
+from app.core.contracts.easy_options_interface import BaseEasyOptions
 from app.core.easy_options import EasyOptions
 
 # HELPER METHODS
@@ -20,7 +21,8 @@ def apply_overrides(config, overrides):
 # TODO: Pass plugin debug flag
 
 class FeatureManager:
-    def __init__(self, defaults, feature_definitions):
+    def __init__(self, defaults, feature_definitions, debug=False):
+        self.debug = debug
         self.features = self.load_features(defaults, feature_definitions)
 
     def shutdown(self):
@@ -37,6 +39,9 @@ class FeatureManager:
         failures = 0
         scanned = 0
         disabled = 0
+
+        if self.debug:
+            print("[FeatureManager] FeatureManager is in debug mode!")
 
         print("[FeatureManager] Loading features...")
         print(f"[FeatureManager] {len(feature_definitions)} feature(s) defined.")
@@ -104,7 +109,7 @@ class FeatureManager:
 
             # 4. Verify that module is an instance of contract
             instance = module_instance_data.get("instance")
-            if not isinstance(instance, feature_interface.BaseFeature):
+            if not isinstance(instance, BaseFeature):
                 print(f"    → ❌ Failed: register() did not return BaseFeature: {module_path}")
                 failures += 1
                 continue
@@ -125,9 +130,10 @@ class FeatureManager:
 
 
             # check if module registration provides an EasyOptions instance
-            easy_option = None
-            if hasattr(module, "easy_option"):
-                print(f"    → ✅ EasyOptions provided.")
+            easy_option = module_instance_data.get("easy_options")
+            if isinstance(easy_option, BaseEasyOptions):
+                    easy_option.set_feature_name(feature_name)
+                    print(f"    → ✅ EasyOptions loaded.")
 
 
             elapsed = time.time() - start_time
@@ -136,7 +142,7 @@ class FeatureManager:
             # 5. Store with other features
             loaded_features[feature_name] = {
                 "instance": instance,
-                "easy_option": easy_option,
+                "easy_options": easy_option,
                 "shutdown": module_instance_data.get("shutdown"),
                 "version": feature_version,
                 "display_name": feature_display_name,
@@ -150,11 +156,11 @@ class FeatureManager:
         print(f"[FeatureManager] Loaded:\t{len(loaded_features)} feature(s).")
         return loaded_features
 
-    def __get_feature(self, feature_name: str) -> feature_interface.BaseFeature:
+    def __get_feature_and_options(self, feature_name: str) -> (BaseFeature, BaseEasyOptions):
         feature = self.features.get(feature_name)
         if not feature:
             raise Exception(f"Feature '{feature_name}' not found")
-        return feature["instance"]
+        return feature["instance"], feature["easy_options"]
 
     def get_available_features(self):
         return {
@@ -165,9 +171,21 @@ class FeatureManager:
             for name, data in self.features.items()
         }
 
-    def invoke_feature(self, feature_name: str, params):
+    def invoke_feature(self, feature_name: str, option_id: str, params: dict) -> str:
+        params["debug"] = self.debug
 
-        feature = self.__get_feature(feature_name)
-        response = feature.run(params)
+        feature, options = self.__get_feature_and_options(feature_name)
 
-        return response
+        # if EasyOptions is defined
+        if options is not None:
+            # if an option is selected, call callback
+            if option_id is not None:
+                return options.get_option_callable(option_id)(params)
+            # if an option is not selected, show options
+            else:
+                return options.render()
+        # no EasyOptions defined
+        # this is the minimum default
+        else:
+            response = feature.run(params)
+            return response
