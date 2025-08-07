@@ -187,7 +187,7 @@ run_all() {
 # Main execution logic
 if [ "$NON_INTERACTIVE" = true ]; then
     echo "Running in non-interactive mode..."
-    run_all
+    run_basic
     echo "Analysis complete!"
     exit 0
 else
