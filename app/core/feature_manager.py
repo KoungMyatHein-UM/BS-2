@@ -1,9 +1,9 @@
 import importlib
 import time
 import traceback
+
 from app.core.contracts.feature_interface import BaseFeature
 from app.core.contracts.easy_options_interface import BaseEasyOptions
-from app.core.easy_options import EasyOptions
 
 # HELPER METHODS
 def apply_defaults(config, defaults):
@@ -18,13 +18,12 @@ def apply_overrides(config, overrides):
     return config
 # ==================================
 
-# TODO: Pass plugin debug flag
-
 class FeatureManager:
     def __init__(self, defaults, feature_definitions, debug=False):
         self.debug = debug
         self.features = self.load_features(defaults, feature_definitions)
 
+    # TODO: WiP
     def shutdown(self):
         print("[FeatureManager] Shutting down features...")
         for feature in self.features.values():
@@ -55,7 +54,7 @@ class FeatureManager:
             feature_config = apply_overrides(feature_config, feature_definitions[feature])
 
             feature_enabled = feature_config['enabled']
-            feature_cached = feature_config['cached']
+            # feature_cached = feature_config['cached']
             feature_display_name = feature_config['display_name']
             feature_version = feature_config['version']
             feature_description = feature_config['description']
@@ -156,7 +155,7 @@ class FeatureManager:
         print(f"[FeatureManager] Loaded:\t{len(loaded_features)} feature(s).")
         return loaded_features
 
-    def __get_feature_and_options(self, feature_name: str) -> (BaseFeature, BaseEasyOptions):
+    def __get_feature_and_options(self, feature_name: str) -> tuple[BaseFeature, BaseEasyOptions]:
         feature = self.features.get(feature_name)
         if not feature:
             raise Exception(f"Feature '{feature_name}' not found")
@@ -185,7 +184,7 @@ class FeatureManager:
             else:
                 return options.render()
         # no EasyOptions defined
-        # this is the minimum default
+        # this is the default
         else:
             response = feature.run_default(params)
             return response

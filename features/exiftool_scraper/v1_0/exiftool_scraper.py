@@ -10,7 +10,8 @@ def register():
     instance = Feature()
 
     easy_options = EasyOptions("EXIFTools Scraper Options:")
-    easy_options.add_option("file_path", "File Path", None)
+    easy_options.add_option("file_path", "Run", instance.run_default)
+    easy_options.add_option("hello", "Say Hello!", instance.hello)
 
     return {
         "instance": instance,
@@ -24,6 +25,9 @@ class Feature(BaseFeature):
 
     def shutdown(self):
         print("Shutting down exiftool_scraper...")
+
+    def hello(self, params: dict):
+        return f"Hello from exiftool_scraper! {params.get('file_path')}"
 
     def run_default(self, params: dict) -> str:
         file_path = params.get("file_path")
