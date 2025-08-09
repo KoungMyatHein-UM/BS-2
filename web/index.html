@@ -152,7 +152,19 @@
         }
     });
 
+    id = null;
+    option = null;
+
+    async function reloadFeature() {
+        if (this.id === null || this.option === null) {
+            return;
+        }
+        await runFeature(this.id, this.option);
+    }
+
     async function runFeature(id, option) {
+        this.id = id;
+        this.option = option;
         try {
             const content = await window.pywebview.api.run_feature(id, option);
 

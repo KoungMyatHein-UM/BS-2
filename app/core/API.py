@@ -44,8 +44,8 @@ class API:
             self.file_path = filepath
 
             # reload the feature
-            if self.feature_reload and self.last_used_feature is not None:
-                webview.windows[0].evaluate_js(f'runFeature("{self.last_used_feature}")')
+            if self.feature_reload:
+                webview.windows[0].evaluate_js(f'reloadFeature()')
 
             return filepath
         else:

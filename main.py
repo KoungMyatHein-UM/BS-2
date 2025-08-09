@@ -19,7 +19,7 @@ def start_app(debug=False):
     index_html = os.path.join(web_dir, app_constants.HTML_NAME)
 
     feature_manager = FeatureManager(app_constants.DEFAULTS, app_constants.APP_FEATURES, debug=debug)
-    app_api = API(feature_manager, app_constants.SUPPORTED_FILE_TYPES)
+    app_api = API(feature_manager, app_constants.SUPPORTED_FILE_TYPES, feature_reload_on_file_change=True)
     main_window = webview.create_window(
         f"{app_constants.APP_NAME} {app_constants.APP_VERSION}",
         str(index_html),
