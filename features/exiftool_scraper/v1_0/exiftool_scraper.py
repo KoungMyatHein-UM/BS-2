@@ -23,7 +23,7 @@ def register():
 class Feature(BaseFeature):
     def self_test(self):
         return True
-    
+
     def hello(self, params: dict = None) -> str:
         return f"Hello from exiftool_scraper with params: {params}!"
 
