@@ -47,11 +47,10 @@ APP_FEATURES = {
         "icon": "icon_3.png"
     },
 
-    "Feature_5": {
-        "enabled": False,
+    "iris": {
         "version": "v1_0",
-        "display_name": "Feature 5",
-        "description": "This is the fifth feature",
-        "icon": "icon_3.png"
+        "display_name": "IRIS - Reverse Image Search",
+        "description": "This feature allows you to perform reverse image searches",
+        "icon": "icon_iris.png"
     }
 }
