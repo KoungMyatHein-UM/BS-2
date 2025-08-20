@@ -1,3 +1,86 @@
+# Binwalk Feature — Module Documentation
+#
+# Purpose:
+# Automates signature scanning to identify embedded files/headers, extraction of embedded content, and entropy analysis for randomness/compression hotspots.
+# Returns a normalized result for consistent rendering and consumption.
+#
+# Architecture & Modularity:
+# - Feature(BaseFeature): Implements the feature contract + EasyOptions callbacks, with a default action (Signature Scan).
+# - BinwalkResult (dataclass): Normalized container for scan/extract/entropy: signatures, output paths, raw outputs, and notes. Exposed via to_dict().
+# - Templating: jinja2.Template for HTML panels (Scan/Extract/Entropy) and Help panel.
+#
+# Contracts used:
+# - app.core.contracts.feature_interface.BaseFeature
+# - app.core.easy_options.EasyOptions
+#
+# Modularity:
+# - Plug-in register() returns { instance, self_test, shutdown, easy_options }.
+# - Inputs are passed via params: dict (e.g., file_path, output_dir, matryoshka).
+#
+# Platform Awareness & External Dependencies:
+# - Binary: binwalk.
+# - Windows native: uses binwalk if found in PATH.
+# - Windows fallback: uses WSL (wsl -e binwalk) with path conversion to /mnt/....
+# - Linux/macOS: calls binwalk directly.
+# - If neither path is available, the feature returns a friendly error with install tips.
+#
+# Commands Executed:
+# - Signature Scan: binwalk <file>. Output is parsed into a table of {offset, hex_offset, description}, preserved entirely in raw output.
+# - Extract: binwalk -e -C <output_dir> <file> (+ optional -M for Matryoshka recursion if params["matryoshka"] is true). Uses a deterministic output directory; newly created paths are listed in output_paths.
+# - Entropy: binwalk -E <file>. Captures and returns entropy text output (raw is also preserved).
+#
+# EasyOptions (UI):
+# Option ID      Label                   Action
+# help           Help / Tips             Shows usage tips
+# scan_html      Signature Scan (HTML)   Runs scan, renders HTML
+# extract_html   Extract (HTML)          Runs extraction, renders HTML
+# entropy_html   Entropy (HTML)          Runs entropy analysis, renders HTML
+# scan_json      Signature Scan (JSON)   Returns normalized dict as JSON
+# extract_json   Extract (JSON)          Returns normalized dict as JSON
+# entropy_json   Entropy (JSON)          Returns normalized dict as JSON
+# - run_default() calls Signature Scan (HTML).
+#
+# Normalized Result Schema:
+# {
+#   "tool": "binwalk",
+#   "ok": true,
+#   "action": "scan",                       # "extract" or "entropy"
+#   "file": "C:/path/firmware.bin",
+#   "cmd": ["binwalk","/mnt/c/path/firmware.bin"],
+#   "signatures": [
+#     {"offset": "0", "hex_offset": "0x0", "description": "uImage header, size: ..."},
+#     {"offset": "2048", "hex_offset": "0x800", "description": "gzip compressed data"}
+#   ],
+#   "output_paths": [],                      # e.g., [ "C:/out/firmware.bin.extracted", ... ] for extract
+#   "entropy": null,                         # plain text when action == "entropy"
+#   "errors": null,
+#   "raw": { "stdout": "...", "stderr": "" },
+#   "notes": [
+#     "Using WSL fallback for binwalk.",
+#     "Tip: install via WSL Ubuntu: `sudo apt update && sudo apt install -y binwalk`."
+#   ]
+# }
+#
+# Error Handling & Hints:
+# - Missing binary: Clear message and install hints (apt on Ubuntu); WSL fallback guidance on Windows.
+# - Extraction outputs: The module compares directory contents before/after to list created paths (plus common <file>.extracted dir).
+# - Timeouts & non-zero exit: Reported cleanly with preserved stdout/stderr.
+# - Entropy capture: Plain text is returned and also preserved raw.
+#
+# Self-test & Shutdown:
+# - self_test(): Lightweight check (always returns True) to keep the UI usable even without binwalk; Help remains accessible.
+# - shutdown(): No persistent state; logs a message.
+#
+# Known Limitations:
+# - On Windows, native binwalk installs are uncommon; WSL is the recommended path.
+# - Signature parsing uses a common regex and may miss nonstandard formats; complete raw output is always available.
+# - Extraction layout and naming depend on binwalk’s plugins and the input file.
+#
+# Integration Points:
+# - Works with the existing web UI: pywebview.api.run_feature("binwalk", option); returns HTML (or JSON).
+# - Normalized dict enables consistent aggregation with other features
+
+
 from __future__ import annotations
 
 import json

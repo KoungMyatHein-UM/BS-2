@@ -1,3 +1,94 @@
+# Steghide Feature — Module Documentation
+#
+# Purpose:
+# Automates inspection and extraction of steganographic payloads hidden in cover files supported by steghide (JPEG, BMP3, WAV, AU).
+# Exposes a UI via EasyOptions and returns a normalized result for consistent HTML/JSON rendering.
+#
+# Architecture & Modularity:
+# - Feature(BaseFeature): Implements the feature contract for FeatureManager. Provides EasyOptions callbacks and default behavior.
+# - SteghideResult (dataclass): Internal normalized container for results (action, success, parsed info, extracted paths, raw stdout/stderr, etc.). Exposed as dict via to_dict().
+# - Templating: Uses jinja2.Template for HTML rendering of Info/Extract results and Help panel.
+#
+# Contracts used:
+# - app.core.contracts.feature_interface.BaseFeature
+# - app.core.easy_options.EasyOptions
+#
+# Modularity:
+# - Fully plug-in driven: register() returns the instance, optional self_test, shutdown, and EasyOptions menu.
+# - No global state; all actions accept a params: dict for inputs (uses params["file_path"]).
+#
+# External Dependencies & Platform Awareness:
+# - Binary: steghide (native binary on Linux/macOS or steghide.exe on Windows).
+# - Windows fallback: Uses WSL (wsl -e steghide) if no native binary is found.
+# - Path conversion: Windows paths (C:\…) mapped to /mnt/c/… for WSL.
+# - Non-interactive: Always passes -p <passphrase> to prevent interactive prompts.
+#
+# Commands Executed:
+# - Info: steghide info -v -sf <file> -p <passphrase> (parses Key: Value lines from stdout)
+# - Extract: steghide extract -sf <file> -xf <output_file> -f -p <passphrase> (writes steghide_extracted.bin next to input)
+# - Passphrase: Collected via tkinter prompt (masked); falls back to empty passphrase if unavailable.
+#
+# EasyOptions (UI):
+# Option ID         Label                 Action
+# help              Help / Tips           Shows usage tips & BMP3 note
+# info_html         Info (HTML)           Runs info, renders HTML
+# extract_html      Extract (HTML)        Runs extract, renders HTML
+# info_json         Info (JSON)           Returns normalized dict as JSON
+# extract_json      Extract (JSON)        Returns normalized dict as JSON
+# - run_default() calls Info (HTML) for simple click behavior.
+#
+# Normalized Result Schema:
+# {
+#   "tool": "steghide",
+#   "ok": true,
+#   "action": "info",                # or "extract"
+#   "file": "C:/path/to/cover.bmp",
+#   "cmd": ["steghide","info","-v","-sf","/mnt/c/path/to/cover.bmp","-p","*****"],
+#   "info": {                        # parsed Key: Value lines from `info -v`
+#     "encryption": "rijndael-128",  # fields vary by file; best-effort parse
+#     "compression": "9",
+#     "embedded file name": "secret.txt",
+#     "embedded file size": "123 bytes"
+#   },
+#   "extracted": ["C:/path/to/steghide_extracted.bin"],  # only for extract
+#   "errors": null,                # stderr or message on failure
+#   "raw": {
+#     "stdout": "...",
+#     "stderr": ""
+#   },
+#   "notes": [
+#     "Using WSL fallback for steghide.",
+#     "BMP V5 detected; convert to BMP3: convert input.bmp bmp3:output_v3.bmp"
+#   ]
+# }
+#
+# - Info fields are best-effort and depend on steghide output (encryption, compression, embedded file name/size, cipher, etc.).
+#
+# Error Handling & Hints:
+# - Missing binary: Returns ok=false with a clear note (suggests using WSL or installing steghide).
+# - Unsupported BMP V5 (biSize: 124): Adds a hint to convert to BMP3 (ImageMagick).
+# - Wrong/empty passphrase or no payload: Adds a hint based on common steghide messages.
+# - Timeouts: Clear timeouts for both actions.
+# - Raw output: Full stdout/stderr provided under a collapsible block for debugging.
+#
+# Self-test & Shutdown:
+# - self_test(): Non-blocking (always returns True) so the feature can load even when steghide/WSL isn’t present; users can still read Help.
+# - shutdown(): Logs a simple message; no persistent state to clean up.
+#
+# Security Notes:
+# - Passphrase is passed via -p (visible in process args on the local machine). Acceptable for CTF tooling; for stricter handling, use a temp file or env var.
+#
+# Known Limitations:
+# - Info parsing is line-based and tolerant, but not a strict schema; fields depend on steghide’s output.
+# - BMP V5 needs conversion to BMP3 for Steghide compatibility.
+# - On Windows without WSL or a native binary, the action will gracefully fail with guidance.
+#
+# Integration Points:
+# - Works with the existing web UI: frontend calls api.run_feature("steghide", option); module returns HTML/JSON strings.
+# - Normalized dict makes it easy to aggregate results or switch renderer
+
+
+
 from __future__ import annotations
 
 import json
@@ -490,3 +581,6 @@ class Feature(BaseFeature):
                 raw={"stdout": "", "stderr": ""},
                 notes=notes,
             )
+
+
+
